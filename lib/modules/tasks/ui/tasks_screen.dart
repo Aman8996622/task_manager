@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:task_manager/core/constants/string_constants.dart';
@@ -41,7 +40,7 @@ class _TasksScreenState extends State<TasksScreen> {
     return Container(
       color: Colors.white,
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-      height: 100,
+      height: 130,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -51,21 +50,25 @@ class _TasksScreenState extends State<TasksScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  child: const Text(
-                    StringConstants.welcomeTitle,
-                    style: TextStyle(
-                        color: ColorConstants.kPrimaryColor,
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold),
+                Expanded(
+                  child: Container(
+                    child: const Text(
+                      StringConstants.welcomeTitle,
+                      style: TextStyle(
+                          color: ColorConstants.kPrimaryColor,
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
-                const Text(
-                  StringConstants.greatDay,
-                  style: TextStyle(
-                      color: ColorConstants.kPrimaryColor,
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold),
+                Expanded(
+                  child: const Text(
+                    StringConstants.greatDay,
+                    style: TextStyle(
+                        color: ColorConstants.kPrimaryColor,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold),
+                  ),
                 ),
               ],
             ),
@@ -90,11 +93,13 @@ class _TasksScreenState extends State<TasksScreen> {
 
   buildTasks(TasksListProvider tasksListProvider) {
     return tasksListProvider.tasks.isEmpty
-        ? buildEmptyTasksList()
+        ? buildEmptyTasksList(
+            provider:  tasksListProvider
+        )
         : Column(
             children: [
               TasksScreenHeader(
-                currentFilter:  tasksListProvider.currentFilter,
+                currentFilter: tasksListProvider.currentFilter,
                 tasksCount: tasksListProvider.tasks.length,
                 onFilterChanged: (filter) {
                   tasksListProvider.setFilter(filter);
@@ -114,10 +119,17 @@ class _TasksScreenState extends State<TasksScreen> {
     );
   }
 
-  buildEmptyTasksList() {
+  buildEmptyTasksList({required TasksListProvider provider}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        TasksScreenHeader(
+          currentFilter: provider.currentFilter,
+          tasksCount: provider.tasks.length,
+          onFilterChanged: (filter) {
+            provider.setFilter(filter);
+          },
+        ),
         SizedBox(
           height: MediaQuery.of(context).size.height * 0.3,
         ),
